@@ -1,0 +1,66 @@
+package com.github.dgautier.icn.plugin;
+
+import com.filenet.api.core.ObjectStore;
+import com.github.dgautier.icn.ICNLogger;
+import com.github.dgautier.icn.PluginUtils;
+import com.ibm.ecm.extension.PluginResponseFilter;
+import com.ibm.ecm.extension.PluginServiceCallbacks;
+import com.ibm.json.java.JSONObject;
+
+import javax.servlet.http.HttpServletRequest;
+
+/**
+ * Created by DGA on 22/01/2015.
+ */
+public abstract class AbstractPluginResponseFilter extends PluginResponseFilter {
+
+    private ICNLogger logger;
+    private String service;
+    private PluginServiceCallbacks callbacks;
+    private HttpServletRequest request;
+    private JSONObject json;
+
+    protected ObjectStore getObjectStore() {
+        return PluginUtils.getObjectStore(getService(),getLogger(),getCallbacks(), getRequest());
+    }
+
+
+    @Override
+    public void filter(String service, PluginServiceCallbacks callbacks,
+                       HttpServletRequest request, JSONObject jsonObject) throws Exception {
+
+        this.service = service;
+        this.callbacks = callbacks;
+        this.request = request;
+        this.json = jsonObject;
+        this.logger = new ICNLogger(callbacks.getLogger(), request);
+
+        PluginUtils.print(getLogger(), getRequest());
+        getLogger().debug(this,"filter","filteringService="+service);
+        getLogger().debug(this,"filter","jsonObject="+getJson().toString());
+        filter();
+    }
+
+    public abstract void filter() throws Exception;
+
+    protected ICNLogger getLogger() {
+        return logger;
+    }
+
+    protected JSONObject getJson() {
+        return json;
+    }
+
+    protected HttpServletRequest getRequest() {
+        return request;
+    }
+
+    protected PluginServiceCallbacks getCallbacks() {
+        return callbacks;
+    }
+
+    public String getService() {
+        return service;
+    }
+}
+
