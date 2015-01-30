@@ -38,16 +38,24 @@ public class ResultSetRow {
     public String getDisplayValueOrValue(String symbolicName) {
         
         if (!isNullOrEmpty(this.resultSetRow.getAttributeDisplayValue(symbolicName))){
-            String displayValue = this.resultSetRow.getAttributeDisplayValue(symbolicName);
-            logger.debug(ResultSetRow.class, "getDisplayValueOrValue", "symbolicName=" + symbolicName + ";displayValue="+displayValue);
-            return displayValue; 
+            return getDisplayValue(symbolicName);
         } else if (this.resultSetRow.getAttributeValue(symbolicName) != null) {
-            Object value = this.resultSetRow.getAttributeValue(symbolicName);
-            logger.debug(ResultSetRow.class, "getDisplayValueOrValue", "symbolicName=" + symbolicName + ";value="+value);
-            return this.resultSetRow.getAttributeValue(symbolicName).toString();
+            return (String) getValue(symbolicName);
         } else {
             logger.debug(ResultSetRow.class, "getDisplayValueOrValue", "No value for symbolicName=" + symbolicName);
             return "";
         }
+    }
+
+    public Object getValue(String symbolicName) {
+        Object value = this.resultSetRow.getAttributeValue(symbolicName);
+        logger.debug(ResultSetRow.class, "getDisplayValueOrValue", "symbolicName=" + symbolicName + ";value="+value);
+        return this.resultSetRow.getAttributeValue(symbolicName);
+    }
+
+    public String getDisplayValue(String symbolicName) {
+        String displayValue = this.resultSetRow.getAttributeDisplayValue(symbolicName);
+        logger.debug(ResultSetRow.class, "getDisplayValueOrValue", "symbolicName=" + symbolicName + ";displayValue="+displayValue);
+        return displayValue;
     }
 }
