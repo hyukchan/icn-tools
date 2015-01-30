@@ -1,10 +1,12 @@
 package com.github.dgautier.icn.model.json;
 
 import com.filenet.api.admin.LocalizedString;
+import com.filenet.api.collection.ChoiceList;
 import com.filenet.api.collection.LocalizedStringList;
 import com.filenet.api.constants.TypeID;
 import com.github.dgautier.icn.ICNLogger;
 import com.github.dgautier.icn.model.DataType;
+import com.google.common.base.Function;
 import com.ibm.json.java.JSONArray;
 import com.ibm.json.java.JSONObject;
 
@@ -62,7 +64,19 @@ public class Criteria extends JsonObject {
         JSONObject jsonChoiceList = new JSONObject();
         jsonChoiceList.put("displayName", choiceList.get_DisplayName());
         
-        JSONArray choiceListValues = getChoiceValues(locale, choiceList.get_ChoiceValues(), choiceList.get_DataType());
+        JSONArray choiceListValues = getChoiceValues(locale, choiceList.get_ChoiceValues(), choiceList.get_DataType(), null);
+        jsonChoiceList.put("choices",choiceListValues );
+        getJsonObject().put("choiceList", jsonChoiceList);
+
+        setValidValues(locale,choiceListValues);
+    }
+
+    public void setChoiceList(Locale locale, com.filenet.api.admin.ChoiceList choiceList,Function<JSONObject,JSONObject> optionalProperty) {
+        this.LOGGER.debug(Criteria.class, "setChoiceList", "setChoiceList=" + choiceList + " on criteria=" + getSymbolicName());
+        JSONObject jsonChoiceList = new JSONObject();
+        jsonChoiceList.put("displayName", choiceList.get_DisplayName());
+
+        JSONArray choiceListValues = getChoiceValues(locale, choiceList.get_ChoiceValues(), choiceList.get_DataType(),optionalProperty);
         jsonChoiceList.put("choices",choiceListValues );
         getJsonObject().put("choiceList", jsonChoiceList);
 
@@ -75,7 +89,7 @@ public class Criteria extends JsonObject {
         getJsonObject().put("validValues", validValues);
     }
 
-    private JSONArray getChoiceValues(Locale locale, com.filenet.api.collection.ChoiceList cl, TypeID typeID) {
+    private JSONArray getChoiceValues(Locale locale, ChoiceList cl, TypeID typeID, Function<JSONObject, JSONObject> optionalProperty) {
         JSONArray jsonChoices = new JSONArray();
         Iterator itr = cl.iterator();
         while (itr.hasNext()) {
@@ -93,9 +107,15 @@ public class Criteria extends JsonObject {
             jsonChoice.put("displayName", displayName);
             if (cValue != null) {
                 jsonChoice.put("value", cValue);
+                if (optionalProperty != null){
+                    jsonChoice = optionalProperty.apply(jsonChoice);
+                }
             } else {
-                jsonChoice.put("choices", getChoiceValues(locale, c.get_ChoiceValues(), typeID));
+                jsonChoice.put("choices", getChoiceValues(locale, c.get_ChoiceValues(), typeID, optionalProperty));
             }
+            
+          
+            
             jsonChoices.add(jsonChoice);
         }
         return jsonChoices;
