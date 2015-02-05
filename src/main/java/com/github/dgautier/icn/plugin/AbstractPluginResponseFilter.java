@@ -3,6 +3,7 @@ package com.github.dgautier.icn.plugin;
 import com.filenet.api.core.ObjectStore;
 import com.github.dgautier.icn.ICNLogger;
 import com.github.dgautier.icn.PluginUtils;
+import com.github.dgautier.icn.RequestParameters;
 import com.ibm.ecm.extension.PluginResponseFilter;
 import com.ibm.ecm.extension.PluginServiceCallbacks;
 import com.ibm.json.java.JSONObject;
@@ -39,6 +40,10 @@ public abstract class AbstractPluginResponseFilter extends PluginResponseFilter 
         getLogger().debug(this,"filter","filteringService="+service);
         getLogger().debug(this,"filter","jsonObject="+getJson().toString());
         filter();
+    }
+    
+    public String getTemplateName(){
+        return getRequest().getParameter(RequestParameters.TEMPLATE_NAME);
     }
 
     public abstract void filter() throws Exception;
