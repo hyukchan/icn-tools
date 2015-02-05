@@ -61,27 +61,22 @@ public class Criteria extends JsonObject {
 
     public void setChoiceList(Locale locale, com.filenet.api.admin.ChoiceList choiceList) {
         this.LOGGER.debug(Criteria.class, "setChoiceList", "setChoiceList=" + choiceList + " on criteria=" + getSymbolicName());
-        JSONObject jsonChoiceList = new JSONObject();
-        jsonChoiceList.put("displayName", choiceList.get_DisplayName());
-        
-        JSONArray choiceListValues = getChoiceValues(locale, choiceList.get_ChoiceValues(), choiceList.get_DataType(), null);
-        jsonChoiceList.put("choices",choiceListValues );
+        JSONArray choiceListValues = JsonUtils.getChoiceValues(locale, choiceList, null);
+        JSONObject jsonChoiceList = JsonUtils.getChoiceList(choiceList, choiceListValues);
         getJsonObject().put("choiceList", jsonChoiceList);
-
         setValidValues(locale,choiceListValues);
     }
 
     public void setChoiceList(Locale locale, com.filenet.api.admin.ChoiceList choiceList,Function<JSONObject,JSONObject> optionalProperty) {
         this.LOGGER.debug(Criteria.class, "setChoiceList", "setChoiceList=" + choiceList + " on criteria=" + getSymbolicName());
-        JSONObject jsonChoiceList = new JSONObject();
-        jsonChoiceList.put("displayName", choiceList.get_DisplayName());
 
-        JSONArray choiceListValues = getChoiceValues(locale, choiceList.get_ChoiceValues(), choiceList.get_DataType(),optionalProperty);
-        jsonChoiceList.put("choices",choiceListValues );
+        JSONArray choiceListValues = JsonUtils.getChoiceValues(locale, choiceList, optionalProperty);
+        JSONObject jsonChoiceList = JsonUtils.getChoiceList(choiceList, choiceListValues);
         getJsonObject().put("choiceList", jsonChoiceList);
-
         setValidValues(locale,choiceListValues);
     }
+
+
 
     public void setValidValues(Locale locale, JSONArray validValues) {
 
@@ -89,66 +84,6 @@ public class Criteria extends JsonObject {
         getJsonObject().put("validValues", validValues);
     }
 
-    private JSONArray getChoiceValues(Locale locale, ChoiceList cl, TypeID typeID, Function<JSONObject, JSONObject> optionalProperty) {
-        JSONArray jsonChoices = new JSONArray();
-        Iterator itr = cl.iterator();
-        while (itr.hasNext()) {
-            com.filenet.api.admin.Choice c = (com.filenet.api.admin.Choice) itr.next();
-            String cValue = null;
-            if (typeID.equals(TypeID.LONG)) {
-                if (c.get_ChoiceIntegerValue() != null) {
-                    cValue = c.get_ChoiceIntegerValue() + "";
-                }
-            } else if (typeID.equals(TypeID.STRING)) {
-                cValue = c.get_ChoiceStringValue();
-            }
-            JSONObject jsonChoice = new JSONObject();
-            String displayName = getLocalizedText(c, locale);
-            jsonChoice.put("displayName", displayName);
-            if (cValue != null) {
-                jsonChoice.put("value", cValue);
-                if (optionalProperty != null){
-                    jsonChoice = optionalProperty.apply(jsonChoice);
-                }
-            } else {
-                jsonChoice.put("choices", getChoiceValues(locale, c.get_ChoiceValues(), typeID, optionalProperty));
-            }
-            
-          
-            
-            jsonChoices.add(jsonChoice);
-        }
-        return jsonChoices;
-    }
 
-    private String getLocalizedText(com.filenet.api.admin.Choice choice, Locale locale) {
-        String displayName = choice.get_DisplayName();
-        if (choice.getProperties().isPropertyPresent("DisplayNames")) {
-            String language = locale.getLanguage();
-            String localeName = locale.getLanguage() + "-" + locale.getCountry();
-            LocalizedStringList names = choice.get_DisplayNames();
-            Iterator i = names.iterator();
-            boolean found = false;
-            while (i.hasNext()) {
-                LocalizedString name = (LocalizedString) i.next();
-                if (name.get_LocaleName().equalsIgnoreCase(localeName)) {
-                    displayName = name.get_LocalizedText();
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                i = names.iterator();
-                while (i.hasNext()) {
-                    LocalizedString name = (LocalizedString) i.next();
-                    if (name.get_LocaleName().equalsIgnoreCase(language)) {
-                        displayName = name.get_LocalizedText();
-                        break;
-                    }
-                }
-            }
-        }
-        return displayName;
-    }
 
 }
