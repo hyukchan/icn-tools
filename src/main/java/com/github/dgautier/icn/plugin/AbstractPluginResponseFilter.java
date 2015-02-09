@@ -4,6 +4,7 @@ import com.filenet.api.core.ObjectStore;
 import com.github.dgautier.icn.ICNLogger;
 import com.github.dgautier.icn.PluginUtils;
 import com.github.dgautier.icn.RequestParameters;
+import com.github.dgautier.icn.model.json.JsonUtils;
 import com.ibm.ecm.extension.PluginResponseFilter;
 import com.ibm.ecm.extension.PluginServiceCallbacks;
 import com.ibm.json.java.JSONObject;
@@ -25,6 +26,18 @@ public abstract class AbstractPluginResponseFilter extends PluginResponseFilter 
         return PluginUtils.getObjectStore(getService(),getLogger(),getCallbacks(), getRequest());
     }
 
+    /**
+     * FIXME find a way to avoid having to implement this in PluginService, ResponseFilter, RequestFilter etc..
+     * @param key
+     * @return
+     * @throws Exception
+     */
+    protected String getConfiguration(String key) throws Exception {
+        getLogger().debug("AbstractPluginResponseFilter","getConfiguration","Configuration= " + getCallbacks().loadConfiguration());
+
+        return JsonUtils.getConfiguration(getCallbacks().loadConfiguration(), key);
+    }
+
 
     @Override
     public void filter(String service, PluginServiceCallbacks callbacks,
@@ -42,10 +55,6 @@ public abstract class AbstractPluginResponseFilter extends PluginResponseFilter 
         filter();
     }
     
-    public String getTemplateName(){
-        return getRequest().getParameter(RequestParameters.TEMPLATE_NAME);
-    }
-
     public abstract void filter() throws Exception;
 
     protected ICNLogger getLogger() {

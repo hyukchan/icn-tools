@@ -40,6 +40,12 @@ public abstract class AbstractPluginService extends PluginService {
         execute();
     }
 
+    /**
+     * FIXME find a way to avoid having to implement this in PluginService, ResponseFilter, RequestFilter etc..
+     * @param key
+     * @return
+     * @throws Exception
+     */
     protected String getConfiguration(String key) throws Exception {
         getLogger().debug("AbstractPluginService","getConfiguration","Configuration= " + getCallbacks().loadConfiguration());
 
