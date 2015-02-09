@@ -21,23 +21,35 @@ public class ResultSetRow {
     private final JSONResultSetRow resultSetRow;
     private final ICNLogger logger;
 
-    public ResultSetRow(ICNLogger logger,JSONResultSetRow resultSetRow){
+    public ResultSetRow(ICNLogger logger, JSONResultSetRow resultSetRow) {
         this.logger = logger;
         this.resultSetRow = resultSetRow;
     }
 
+
+    public void setAttributeValue(String symbolicName,  Function<ResultSetRow, String> function) {
+
+        String value = function.apply(this);
+        if (value != null) {
+            this.resultSetRow.setAttributeValue(symbolicName,value);
+            logger.debug(ResultSetRow.class, "setAttributeValue", "symbolicName=" + symbolicName + " value="+value);
+        }
+
+
+    }
+
     public void setAttributeDisplayValue(String symbolicName, Function<ResultSetRow, String> function) {
 
-        if (this.resultSetRow.getAttributeValue(symbolicName) != null){
+        if (this.resultSetRow.getAttributeValue(symbolicName) != null) {
             this.resultSetRow.setAttributeDisplayValue(symbolicName, function.apply(this));
         } else {
-            logger.warn(ResultSetRow.class,"setAttributeDisplayValue","No value for : " + symbolicName +" in "+ this.resultSetRow.toString());
+            logger.warn(ResultSetRow.class, "setAttributeDisplayValue", "No value for : " + symbolicName + " in " + this.resultSetRow.toString());
         }
     }
 
     public String getDisplayValueOrValue(String symbolicName) {
-        
-        if (!isNullOrEmpty(this.resultSetRow.getAttributeDisplayValue(symbolicName))){
+
+        if (!isNullOrEmpty(this.resultSetRow.getAttributeDisplayValue(symbolicName))) {
             return getDisplayValue(symbolicName);
         } else if (this.resultSetRow.getAttributeValue(symbolicName) != null) {
             return (String) getValue(symbolicName);
@@ -49,13 +61,13 @@ public class ResultSetRow {
 
     public Object getValue(String symbolicName) {
         Object value = this.resultSetRow.getAttributeValue(symbolicName);
-        logger.debug(ResultSetRow.class, "getDisplayValueOrValue", "symbolicName=" + symbolicName + ";value="+value);
+        logger.debug(ResultSetRow.class, "getDisplayValueOrValue", "symbolicName=" + symbolicName + ";value=" + value);
         return this.resultSetRow.getAttributeValue(symbolicName);
     }
 
     public String getDisplayValue(String symbolicName) {
         String displayValue = this.resultSetRow.getAttributeDisplayValue(symbolicName);
-        logger.debug(ResultSetRow.class, "getDisplayValueOrValue", "symbolicName=" + symbolicName + ";displayValue="+displayValue);
+        logger.debug(ResultSetRow.class, "getDisplayValueOrValue", "symbolicName=" + symbolicName + ";displayValue=" + displayValue);
         return displayValue;
     }
 }

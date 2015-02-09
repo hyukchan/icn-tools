@@ -1,6 +1,7 @@
 package com.github.dgautier.icn.model.json.response;
 
 import com.github.dgautier.icn.ICNLogger;
+import com.github.dgautier.icn.RequestParameters;
 import com.github.dgautier.icn.model.DataType;
 import com.google.common.base.Function;
 import com.ibm.ecm.json.JSONResultSetColumn;
@@ -17,7 +18,7 @@ public class ResultSetResponse {
     private final JSONResultSetResponse jsonResultSetResponse;
     private final ICNLogger logger;
 
-    public ResultSetResponse(ICNLogger logger,JSONResultSetResponse jsonResultSetResponse) {
+    public ResultSetResponse(ICNLogger logger, JSONResultSetResponse jsonResultSetResponse) {
         this.logger = logger;
         this.jsonResultSetResponse = jsonResultSetResponse;
     }
@@ -26,7 +27,7 @@ public class ResultSetResponse {
     private boolean hasColumn(String symbolicName) {
         return getColumn(symbolicName) != null;
     }
-    
+
     private JSONResultSetColumn getColumn(String symbolicName) {
         for (int columnCount = 0; columnCount < this.jsonResultSetResponse.getColumnCount(); columnCount++) {
             JSONResultSetColumn column = this.jsonResultSetResponse.getColumn(columnCount);
@@ -38,17 +39,37 @@ public class ResultSetResponse {
     }
 
     /**
+     * TODO create abstract parent class to handle this method
+     *
+     * @return
+     */
+    public String getTemplateName() {
+        return (String) jsonResultSetResponse.get(RequestParameters.TEMPLATE_NAME);
+    }
+
+    /**
      * Sets the given attribute value using the given function for each row response
      */
     public void setAttributeDisplayValue(String symbolicName, Function<ResultSetRow, String> function) {
 
         if (hasColumn(symbolicName)) {
             for (int rowCount = 0; rowCount < this.jsonResultSetResponse.getRowCount(); rowCount++) {
-                ResultSetRow row = new ResultSetRow(this.logger,this.jsonResultSetResponse.getRow(rowCount));
+                ResultSetRow row = new ResultSetRow(this.logger, this.jsonResultSetResponse.getRow(rowCount));
                 row.setAttributeDisplayValue(symbolicName, function);
             }
         } else {
-            this.logger.debug(ResultSetResponse.class,"setAttributeDisplayValue","Response has no column="+symbolicName);
+            this.logger.debug(ResultSetResponse.class, "setAttributeDisplayValue", "Response has no column=" + symbolicName);
+        }
+    }
+
+    /**
+     * Sets the given attribute value using the given function for each row response
+     */
+    public void setAttributeValue(String symbolicName, Function<ResultSetRow, String> function) {
+
+        for (int rowCount = 0; rowCount < this.jsonResultSetResponse.getRowCount(); rowCount++) {
+            ResultSetRow row = new ResultSetRow(this.logger, this.jsonResultSetResponse.getRow(rowCount));
+            row.setAttributeValue(symbolicName, function);
         }
     }
 
@@ -63,8 +84,9 @@ public class ResultSetResponse {
 
     /**
      * *
+     *
      * @param title
-     * @param width in px lika : "50px"
+     * @param width        in px like : "50px"
      * @param symbolicName
      * @param style
      * @param sortable
@@ -73,37 +95,37 @@ public class ResultSetResponse {
      * @param value
      * @param displayValue
      */
-    public void addColumn (String title,String width, String symbolicName, String style,boolean sortable,DataType dataType,String format,  Function<ResultSetRow, String> value,Function<ResultSetRow, String> displayValue,boolean asFirstColumn){
-        if (hasColumn(title)){
-            throw new IllegalArgumentException("ResultSetResponse already has a column named ="+title);
+    public void addColumn(String title, String width, String symbolicName, String style, boolean sortable, DataType dataType, String format, Function<ResultSetRow, String> value, Function<ResultSetRow, String> displayValue, boolean asFirstColumn) {
+        if (hasColumn(title)) {
+            throw new IllegalArgumentException("ResultSetResponse already has a column named =" + title);
         }
 
 
         for (int rowCount = 0; rowCount < this.jsonResultSetResponse.getRowCount(); rowCount++) {
             JSONResultSetRow row = this.jsonResultSetResponse.getRow(rowCount);
-            ResultSetRow resultSetRow = new ResultSetRow(this.logger,row);
+            ResultSetRow resultSetRow = new ResultSetRow(this.logger, row);
             //addAttribute(String id, Object value, String type, String format, String displayValue)
-            row.addAttribute(symbolicName, value.apply(resultSetRow),dataType.value(),format,displayValue.apply(resultSetRow));
+            row.addAttribute(symbolicName, value.apply(resultSetRow), dataType.value(), format, displayValue.apply(resultSetRow));
         }
- 
-        JSONResultSetColumn newColumn = new JSONResultSetColumn(title,width,symbolicName,style,sortable);
-        
-        if (asFirstColumn){
+
+        JSONResultSetColumn newColumn = new JSONResultSetColumn(title, width, symbolicName, style, sortable);
+
+        if (asFirstColumn) {
             JSONArray columns = new JSONArray();
-            
+
 
             int count = 0;
-            for (Object column : this.getColumns()){
-            
-                
+            for (Object column : this.getColumns()) {
+
+
                 // We had the new column as the third cause the 2 first columns are icons and status related
-                if (count == 2){
+                if (count == 2) {
                     columns.add(newColumn);
                 } else {
                     columns.add(column);
                 }
                 count++;
-                
+
             }
 
             // Empty Columns 
@@ -111,7 +133,7 @@ public class ResultSetResponse {
 
             // Add columns
             this.getColumns().addAll(columns);
-            
+
         } else {
             this.jsonResultSetResponse.addColumn(newColumn);
         }
@@ -119,10 +141,10 @@ public class ResultSetResponse {
 
 
     private JSONArray getColumns() {
-        JSONObject structure = (JSONObject)this.jsonResultSetResponse.get("columns");
-        JSONArray columnSet0 = (JSONArray)structure.get("cells");
-        JSONArray columns = (JSONArray)columnSet0.get(0);
+        JSONObject structure = (JSONObject) this.jsonResultSetResponse.get("columns");
+        JSONArray columnSet0 = (JSONArray) structure.get("cells");
+        JSONArray columns = (JSONArray) columnSet0.get(0);
         return columns;
     }
-    
+
 }
