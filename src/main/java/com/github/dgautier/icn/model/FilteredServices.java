@@ -20,7 +20,10 @@ public enum FilteredServices {
     P8_OPEN_CONTENT_CLASS("p8","openContentClass"),
     P8_CONTINUE_QUERY("p8","continueQuery"),
     P8_EDIT_ATTRIBUTES("p8","editAttributes"),
-    P8_OPEN_FOLDER("p8","openFolder")
+    P8_OPEN_FOLDER("p8","openFolder"),
+
+    // System Services
+    P8_GET_STEP_PROCESSOR_INFORMATION("p8","getProcessorInformation")
     ;
 
     private final String serverType;
