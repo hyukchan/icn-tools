@@ -4,7 +4,8 @@ package com.github.dgautier.icn.model;
  * Created by DGA on 22/01/2015.
  */
 public enum FilteredServices {
-    
+
+    GET_DESKTOP("getDesktop"),
     P8_GET_WORK_ITEMS("p8","getWorkItems"),
     P8_GET_NEXT_WORK_ITEMS("p8","getNextWorkItems"),
     P8_GET_PROCESS_INBASKETS("p8","getProcessInbaskets"),
@@ -35,6 +36,10 @@ public enum FilteredServices {
         this.serviceName = serviceName;
     }
 
+    FilteredServices(String serviceName){
+        this.serverType = null;
+        this.serviceName = serviceName;
+    }
     public String getServerType() {
         return serverType;
     }
@@ -44,7 +49,12 @@ public enum FilteredServices {
     }
 
     public String getUrl() {
-        String url = "/" + serverType + "/" + serviceName;
+
+        String url = null;
+        if (serverType == null){
+            url = "/" + serverType;
+        }
+        url = url + "/" + serviceName;
         return url;
     }
 
