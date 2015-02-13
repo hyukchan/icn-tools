@@ -25,7 +25,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
  */
 public class PluginUtils {
 
-    private boolean isUserAuthorized(ObjectStore objectStore,String authorizedGroups) throws Exception {
+    public static boolean isUserAuthorized(ObjectStore objectStore,String authorizedGroups) throws Exception {
         User user = Factory.User.fetchCurrent(objectStore.getConnection(),null);
 
 
