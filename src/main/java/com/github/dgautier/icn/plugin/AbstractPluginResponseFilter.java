@@ -54,6 +54,11 @@ public abstract class AbstractPluginResponseFilter extends PluginResponseFilter 
         getLogger().debug(this,"filter","jsonObject="+getJson().toString());
         filter();
     }
+
+    // TODO create common class to handle this method
+    protected String getDesktop(){
+        return getRequest().getParameter("desktop");
+    }
     
     public abstract void filter() throws Exception;
 
