@@ -1,6 +1,12 @@
 package com.github.dgautier.icn;
 
+import com.filenet.api.collection.GroupSet;
+import com.filenet.api.core.Factory;
+import com.filenet.api.core.ObjectStore;
+import com.filenet.api.security.Group;
+import com.filenet.api.security.User;
 import com.filenet.api.util.UserContext;
+import com.google.common.base.Splitter;
 import com.ibm.ecm.extension.PluginServiceCallbacks;
 
 import javax.security.auth.Subject;
@@ -9,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.zip.GZIPOutputStream;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
@@ -17,6 +24,29 @@ import static com.google.common.base.Strings.isNullOrEmpty;
  * Created by DGA on 21/01/2015.
  */
 public class PluginUtils {
+
+    private boolean isUserAuthorized(ObjectStore objectStore,String authorizedGroups) throws Exception {
+        User user = Factory.User.fetchCurrent(objectStore.getConnection(),null);
+
+
+        for (Iterator<String> stringIterator = Splitter.on(",").split(authorizedGroups).iterator();stringIterator.hasNext();){
+
+            String authorizedGroup = stringIterator.next();
+
+            GroupSet userGroups =  user.get_MemberOfGroups();
+            Iterator<Group> groupIterator = userGroups.iterator();
+
+            while (groupIterator.hasNext()) {
+                Group group = groupIterator.next();
+
+                if (group.get_ShortName().equals(authorizedGroup)){
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 
     public static com.filenet.api.core.ObjectStore getObjectStore(String service,ICNLogger logger, PluginServiceCallbacks callbacks, HttpServletRequest request) {
         String repositoryId = request.getParameter(RequestParameters.REPOSITORY_ID);
