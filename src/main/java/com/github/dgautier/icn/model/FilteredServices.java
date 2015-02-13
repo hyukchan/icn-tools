@@ -7,6 +7,7 @@ public enum FilteredServices {
     
     P8_GET_WORK_ITEMS("p8","getWorkItems"),
     P8_GET_NEXT_WORK_ITEMS("p8","getNextWorkItems"),
+    P8_GET_PROCESS_INBASKETS("p8","getProcessInbaskets"),
     P8_SEARCH("p8","search"),
     P8_OPEN_SEARCH_TEMPLATE("p8","openSearchTemplate"),
     P8_GET_CONTENT_ITEMS("p8","getContentItems"),
