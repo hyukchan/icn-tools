@@ -52,9 +52,11 @@ public enum FilteredServices {
 
         String url = null;
         if (serverType == null){
-            url = "/" + serverType;
+            url = "/" + serviceName;
+        } else {
+            url = "/" + serverType + "/" + serviceName;
         }
-        url = url + "/" + serviceName;
+
         return url;
     }
 
