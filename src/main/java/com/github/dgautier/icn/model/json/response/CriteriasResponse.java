@@ -3,6 +3,7 @@ package com.github.dgautier.icn.model.json.response;
 import com.github.dgautier.icn.ICNLogger;
 import com.github.dgautier.icn.model.json.Criteria;
 import com.google.common.collect.Maps;
+import com.ibm.ecm.json.JSONResponse;
 import com.ibm.json.java.JSONArray;
 import com.ibm.json.java.JSONObject;
 
@@ -14,16 +15,14 @@ import java.util.Map;
 /**
  * Created by DGA on 21/01/2015.
  */
-public class CriteriasResponse {
+public class CriteriasResponse extends AbstractResponse {
 
-    private final JSONObject jsonResponse;
-    private final ICNLogger logger;
+
     private final Map<String, Criteria> criterias = Maps.newHashMap();
 
 
-    public CriteriasResponse(ICNLogger logger, JSONObject jsonResponse) {
-        this.logger = logger;
-        this.jsonResponse = jsonResponse;
+    public CriteriasResponse(ICNLogger logger, JSONResponse jsonResponse) {
+        super(logger,jsonResponse);
 
 
         JSONArray jsonCriterias = (JSONArray) jsonResponse.get("criterias");
@@ -49,7 +48,7 @@ public class CriteriasResponse {
 
 
         List<JSONObject> orderedItems = new ArrayList<JSONObject>();
-        JSONArray jsonCriterias = (JSONArray) jsonResponse.get("criterias");
+        JSONArray jsonCriterias = (JSONArray) getJsonResponse().get("criterias");
 
         // Add ordered Items firsts
         for (String symbolicName : order) {
@@ -70,7 +69,7 @@ public class CriteriasResponse {
             orderedCriterias.add(jsonObject);
         }
 
-        jsonResponse.put("criterias", orderedCriterias);
+        getJsonResponse().put("criterias", orderedCriterias);
 
 
 

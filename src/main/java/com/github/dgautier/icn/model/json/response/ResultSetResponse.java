@@ -4,6 +4,7 @@ import com.github.dgautier.icn.ICNLogger;
 import com.github.dgautier.icn.RequestParameters;
 import com.github.dgautier.icn.model.DataType;
 import com.google.common.base.Function;
+import com.ibm.ecm.json.JSONResponse;
 import com.ibm.ecm.json.JSONResultSetColumn;
 import com.ibm.ecm.json.JSONResultSetResponse;
 import com.ibm.ecm.json.JSONResultSetRow;
@@ -13,24 +14,24 @@ import com.ibm.json.java.JSONObject;
 /**
  * Created by DGA on 23/01/2015.
  */
-public class ResultSetResponse {
-
-    private final JSONResultSetResponse jsonResultSetResponse;
-    private final ICNLogger logger;
+public class ResultSetResponse extends AbstractResponse {
 
     public ResultSetResponse(ICNLogger logger, JSONResultSetResponse jsonResultSetResponse) {
-        this.logger = logger;
-        this.jsonResultSetResponse = jsonResultSetResponse;
+        super(logger,jsonResultSetResponse);
     }
 
+    @Override
+    protected JSONResultSetResponse getJsonResponse() {
+        return (JSONResultSetResponse) super.getJsonResponse();
+    }
 
     private boolean hasColumn(String symbolicName) {
         return getColumn(symbolicName) != null;
     }
 
     private JSONResultSetColumn getColumn(String symbolicName) {
-        for (int columnCount = 0; columnCount < this.jsonResultSetResponse.getColumnCount(); columnCount++) {
-            JSONResultSetColumn column = this.jsonResultSetResponse.getColumn(columnCount);
+        for (int columnCount = 0; columnCount < getJsonResponse().getColumnCount(); columnCount++) {
+            JSONResultSetColumn column = getJsonResponse().getColumn(columnCount);
             if (column.getName().equals(symbolicName)) {
                 return column;
             }
@@ -44,7 +45,7 @@ public class ResultSetResponse {
      * @return
      */
     public String getTemplateName() {
-        return (String) jsonResultSetResponse.get(RequestParameters.TEMPLATE_NAME);
+        return (String) getJsonResponse().get(RequestParameters.TEMPLATE_NAME);
     }
 
     /**
@@ -53,12 +54,12 @@ public class ResultSetResponse {
     public void setAttributeDisplayValue(String symbolicName, Function<ResultSetRow, String> function) {
 
         if (hasColumn(symbolicName)) {
-            for (int rowCount = 0; rowCount < this.jsonResultSetResponse.getRowCount(); rowCount++) {
-                ResultSetRow row = new ResultSetRow(this.logger, this.jsonResultSetResponse.getRow(rowCount));
+            for (int rowCount = 0; rowCount < getJsonResponse().getRowCount(); rowCount++) {
+                ResultSetRow row = new ResultSetRow(getLogger(), getJsonResponse().getRow(rowCount));
                 row.setAttributeDisplayValue(symbolicName, function);
             }
         } else {
-            this.logger.debug(ResultSetResponse.class, "setAttributeDisplayValue", "Response has no column=" + symbolicName);
+            getLogger().debug(ResultSetResponse.class, "setAttributeDisplayValue", "Response has no column=" + symbolicName);
         }
     }
 
@@ -67,8 +68,8 @@ public class ResultSetResponse {
      */
     public void setAttributeValue(String symbolicName, Function<ResultSetRow, String> function) {
 
-        for (int rowCount = 0; rowCount < this.jsonResultSetResponse.getRowCount(); rowCount++) {
-            ResultSetRow row = new ResultSetRow(this.logger, this.jsonResultSetResponse.getRow(rowCount));
+        for (int rowCount = 0; rowCount < getJsonResponse().getRowCount(); rowCount++) {
+            ResultSetRow row = new ResultSetRow(getLogger(), getJsonResponse().getRow(rowCount));
             row.setAttributeValue(symbolicName, function);
         }
     }
@@ -78,7 +79,7 @@ public class ResultSetResponse {
             JSONResultSetColumn column = getColumn(symbolicName);
             column.put("decorator", decorator);
         } else {
-            this.logger.debug(ResultSetResponse.class, "setDecorator", "Response has no column=" + symbolicName);
+            getLogger().debug(ResultSetResponse.class, "setDecorator", "Response has no column=" + symbolicName);
         }
     }
 
@@ -101,9 +102,9 @@ public class ResultSetResponse {
         }
 
 
-        for (int rowCount = 0; rowCount < this.jsonResultSetResponse.getRowCount(); rowCount++) {
-            JSONResultSetRow row = this.jsonResultSetResponse.getRow(rowCount);
-            ResultSetRow resultSetRow = new ResultSetRow(this.logger, row);
+        for (int rowCount = 0; rowCount < getJsonResponse().getRowCount(); rowCount++) {
+            JSONResultSetRow row = getJsonResponse().getRow(rowCount);
+            ResultSetRow resultSetRow = new ResultSetRow(getLogger(), row);
             //addAttribute(String id, Object value, String type, String format, String displayValue)
             row.addAttribute(symbolicName, value.apply(resultSetRow), dataType.value(), format, displayValue.apply(resultSetRow));
         }
@@ -135,13 +136,13 @@ public class ResultSetResponse {
             this.getColumns().addAll(columns);
 
         } else {
-            this.jsonResultSetResponse.addColumn(newColumn);
+            getJsonResponse().addColumn(newColumn);
         }
     }
 
 
     private JSONArray getColumns() {
-        JSONObject structure = (JSONObject) this.jsonResultSetResponse.get("columns");
+        JSONObject structure = (JSONObject) getJsonResponse().get("columns");
         JSONArray columnSet0 = (JSONArray) structure.get("cells");
         JSONArray columns = (JSONArray) columnSet0.get(0);
         return columns;
