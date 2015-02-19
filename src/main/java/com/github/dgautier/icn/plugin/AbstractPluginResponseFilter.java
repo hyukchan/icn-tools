@@ -7,6 +7,7 @@ import com.github.dgautier.icn.RequestParameters;
 import com.github.dgautier.icn.model.json.JsonUtils;
 import com.ibm.ecm.extension.PluginResponseFilter;
 import com.ibm.ecm.extension.PluginServiceCallbacks;
+import com.ibm.ecm.json.JSONResponse;
 import com.ibm.json.java.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +21,7 @@ public abstract class AbstractPluginResponseFilter extends PluginResponseFilter 
     private String service;
     private PluginServiceCallbacks callbacks;
     private HttpServletRequest request;
-    private JSONObject json;
+    private JSONResponse json;
 
     protected ObjectStore getObjectStore() {
         return PluginUtils.getObjectStore(getService(),getLogger(),getCallbacks(), getRequest());
@@ -46,7 +47,7 @@ public abstract class AbstractPluginResponseFilter extends PluginResponseFilter 
         this.service = service;
         this.callbacks = callbacks;
         this.request = request;
-        this.json = jsonObject;
+        this.json = (JSONResponse) jsonObject;
         this.logger = new ICNLogger(callbacks.getLogger(), request);
 
         PluginUtils.print(getLogger(), getRequest());
@@ -66,7 +67,7 @@ public abstract class AbstractPluginResponseFilter extends PluginResponseFilter 
         return logger;
     }
 
-    protected JSONObject getJson() {
+    protected JSONResponse getJson() {
         return json;
     }
 
