@@ -54,10 +54,15 @@ public class JsonUtils {
         return choiceListValues;
     }
 
-    public static JSONObject getChoiceList(com.filenet.api.admin.ChoiceList choiceList,JSONArray choiceListValues) {
+    public static JSONArray getChoiceValues(Locale locale, com.filenet.api.admin.ChoiceList choiceList) {
+        JSONArray choiceListValues = getChoiceValues(locale, choiceList.get_ChoiceValues(), choiceList.get_DataType(),null);
+        return choiceListValues;
+    }
+
+    public static JSONObject getChoiceList(String displayName,JSONArray choiceListValues) {
 
         JSONObject jsonChoiceList = new JSONObject();
-        jsonChoiceList.put("displayName", choiceList.get_DisplayName());
+        jsonChoiceList.put("displayName", displayName);
         jsonChoiceList.put("choices",choiceListValues );
 
         return jsonChoiceList;
