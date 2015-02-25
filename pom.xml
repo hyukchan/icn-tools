@@ -123,6 +123,7 @@
         </plugins>
     </build>
 
+    <!-- TODO find a simple way to use gpg on Windows
     <profiles>
         <profile>
             <id>releaseBranchPrefix-sign-artifacts</id>
@@ -152,4 +153,5 @@
             </build>
         </profile>
     </profiles>
+    -->
 </project>
