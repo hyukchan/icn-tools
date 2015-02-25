@@ -78,28 +78,6 @@ public abstract class AbstractPlugin extends Plugin {
         return true;
     }
 
-    protected void createDesktop(ApplicationConfig appConfig, String desktopId, String desktopName, String description) throws Exception {
-
-        if (isDesktopUnique(appConfig, desktopId)) {
-            DesktopConfig desktopConfig = Config.getDesktopConfig("navigator", desktopId);
-            desktopConfig.setName(desktopName);
-            desktopConfig.setDescription(description);
-            desktopConfig.setApplicationName("IBM Enterprise Records");
-            desktopConfig.setLayout("ier.widget.layout.IERMainLayout");
-            desktopConfig.setFeatures(new String[]{"IERFavorites", "IERBrowseFilePlan", "IERSearch", "IERReports", "IERTasks", "IERConfigure", "IERAdmin"});
-            desktopConfig.setDefaultFeature("IERFavorites");
-            desktopConfig.setProperty("BannerToolsContextMenu", "DefaultIERBannerToolsContextMenu");
-            desktopConfig.setViewer("default");
-            desktopConfig.setShowSecurity(true);
-            desktopConfig.save();
-
-            appConfig.addValueToList("desktops", desktopId);
-            appConfig.save();
-        } else {
-            throw new RuntimeException("Desktop not unique =" + desktopId);
-        }
-    }
-
     protected boolean doesMenuExist(String[] menuIds, String menuId) {
         for (String id : menuIds) {
             if (menuId.equalsIgnoreCase(id))
