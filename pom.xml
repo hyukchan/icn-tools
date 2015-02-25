@@ -41,7 +41,10 @@
         <url>git@github.com/dgautier/icn-tools</url>
         <tag>HEAD</tag>
     </scm>
-
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/dgautier/icn-tools/issues</url>
+    </issueManagement>
 
     <dependencies>
         <dependency>
@@ -97,18 +100,6 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>external.atlassian.jgitflow</groupId>
                 <artifactId>jgitflow-maven-plugin</artifactId>
                 <version>1.0-m4.3</version>
@@ -122,36 +113,4 @@
             </plugin>
         </plugins>
     </build>
-
-    <!-- TODO find a simple way to use gpg on Windows
-    <profiles>
-        <profile>
-            <id>releaseBranchPrefix-sign-artifacts</id>
-            <activation>
-                <property>
-                    <name>performRelease</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.4</version>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-    -->
 </project>
