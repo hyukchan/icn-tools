@@ -21,8 +21,8 @@ public class CriteriasResponse extends AbstractResponse {
     private final Map<String, Criteria> criterias = Maps.newHashMap();
 
 
-    public CriteriasResponse(ICNLogger logger, JSONResponse jsonResponse) {
-        super(logger,jsonResponse);
+    CriteriasResponse(ICNLogger logger, JSONResponse jsonResponse) {
+        super(logger, jsonResponse);
 
 
         JSONArray jsonCriterias = (JSONArray) jsonResponse.get("criterias");
@@ -30,12 +30,15 @@ public class CriteriasResponse extends AbstractResponse {
         while (jsonCriteriasIterator.hasNext()) {
             JSONObject criteria = jsonCriteriasIterator.next();
             String symbolicName = (String) criteria.get("name");
-            this.criterias.put(symbolicName, new Criteria(logger, criteria));
+            this.criterias.put(symbolicName, Criteria.createFromJson(logger, criteria));
             logger.debug(CriteriasResponse.class, "constructor", "symbolicName=" + symbolicName);
         }
-
     }
 
+    public static CriteriasResponse createFromJson(ICNLogger logger, JSONResponse jsonResponse){
+        return new CriteriasResponse(logger,jsonResponse);
+    }
+    
     public Criteria getCriteria(String symbolicName) {
         return this.criterias.get(symbolicName);
     }
@@ -44,7 +47,7 @@ public class CriteriasResponse extends AbstractResponse {
         return this.criterias.containsKey(symbolicName);
     }
 
-    public void order(List<String> order) {
+    public CriteriasResponse order(List<String> order) {
 
 
         List<JSONObject> orderedItems = new ArrayList<JSONObject>();
@@ -71,7 +74,7 @@ public class CriteriasResponse extends AbstractResponse {
 
         getJsonResponse().put("criterias", orderedCriterias);
 
-
+        return this;
 
     }
 

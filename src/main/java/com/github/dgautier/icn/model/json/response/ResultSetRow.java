@@ -21,30 +21,34 @@ public class ResultSetRow {
     private final JSONResultSetRow resultSetRow;
     private final ICNLogger logger;
 
-    public ResultSetRow(ICNLogger logger, JSONResultSetRow resultSetRow) {
+    ResultSetRow(ICNLogger logger, JSONResultSetRow resultSetRow) {
         this.logger = logger;
         this.resultSetRow = resultSetRow;
     }
 
+    public static ResultSetRow createFromJson(ICNLogger logger, JSONResultSetRow resultSetRow) {
+        return new ResultSetRow(logger, resultSetRow);
+    }
 
-    public void setAttributeValue(String symbolicName,  Function<ResultSetRow, String> function) {
+
+    public ResultSetRow setAttributeValue(String symbolicName, Function<ResultSetRow, String> function) {
 
         String value = function.apply(this);
         if (value != null) {
-            this.resultSetRow.setAttributeValue(symbolicName,value);
-            logger.debug(ResultSetRow.class, "setAttributeValue", "symbolicName=" + symbolicName + " value="+value);
+            this.resultSetRow.setAttributeValue(symbolicName, value);
+            logger.debug(ResultSetRow.class, "setAttributeValue", "symbolicName=" + symbolicName + " value=" + value);
         }
-
-
+        return this;
     }
 
-    public void setAttributeDisplayValue(String symbolicName, Function<ResultSetRow, String> function) {
+    public ResultSetRow setAttributeDisplayValue(String symbolicName, Function<ResultSetRow, String> function) {
 
         if (this.resultSetRow.getAttributeValue(symbolicName) != null) {
             this.resultSetRow.setAttributeDisplayValue(symbolicName, function.apply(this));
         } else {
             logger.warn(ResultSetRow.class, "setAttributeDisplayValue", "No value for : " + symbolicName + " in " + this.resultSetRow.toString());
         }
+        return this;
     }
 
     public String getDisplayValueOrValue(String symbolicName) {

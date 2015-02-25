@@ -16,8 +16,12 @@ import com.ibm.json.java.JSONObject;
  */
 public class ResultSetResponse extends AbstractResponse {
 
-    public ResultSetResponse(ICNLogger logger, JSONResultSetResponse jsonResultSetResponse) {
+    ResultSetResponse(ICNLogger logger, JSONResultSetResponse jsonResultSetResponse) {
         super(logger,jsonResultSetResponse);
+    }
+
+    ResultSetResponse createFromJson(ICNLogger logger, JSONResultSetResponse jsonResultSetResponse){
+        return new ResultSetResponse(logger,jsonResultSetResponse);
     }
 
     @Override
@@ -51,7 +55,7 @@ public class ResultSetResponse extends AbstractResponse {
     /**
      * Sets the given attribute value using the given function for each row response
      */
-    public void setAttributeDisplayValue(String symbolicName, Function<ResultSetRow, String> function) {
+    public ResultSetResponse setAttributeDisplayValue(String symbolicName, Function<ResultSetRow, String> function) {
 
         if (hasColumn(symbolicName)) {
             for (int rowCount = 0; rowCount < getJsonResponse().getRowCount(); rowCount++) {
@@ -61,26 +65,31 @@ public class ResultSetResponse extends AbstractResponse {
         } else {
             getLogger().debug(ResultSetResponse.class, "setAttributeDisplayValue", "Response has no column=" + symbolicName);
         }
+        
+        return this;
     }
 
     /**
      * Sets the given attribute value using the given function for each row response
      */
-    public void setAttributeValue(String symbolicName, Function<ResultSetRow, String> function) {
+    public ResultSetResponse setAttributeValue(String symbolicName, Function<ResultSetRow, String> function) {
 
         for (int rowCount = 0; rowCount < getJsonResponse().getRowCount(); rowCount++) {
             ResultSetRow row = new ResultSetRow(getLogger(), getJsonResponse().getRow(rowCount));
             row.setAttributeValue(symbolicName, function);
         }
+        
+        return this;
     }
 
-    public void setDecorator(String symbolicName, String decorator) {
+    public ResultSetResponse setDecorator(String symbolicName, String decorator) {
         if (hasColumn(symbolicName)) {
             JSONResultSetColumn column = getColumn(symbolicName);
             column.put("decorator", decorator);
         } else {
             getLogger().debug(ResultSetResponse.class, "setDecorator", "Response has no column=" + symbolicName);
         }
+        return this;
     }
 
     /**
@@ -96,7 +105,7 @@ public class ResultSetResponse extends AbstractResponse {
      * @param value
      * @param displayValue
      */
-    public void addColumn(String title, String width, String symbolicName, String style, boolean sortable, DataType dataType, String format, Function<ResultSetRow, String> value, Function<ResultSetRow, String> displayValue, boolean asFirstColumn) {
+    public ResultSetResponse addColumn(String title, String width, String symbolicName, String style, boolean sortable, DataType dataType, String format, Function<ResultSetRow, String> value, Function<ResultSetRow, String> displayValue, boolean asFirstColumn) {
         if (hasColumn(title)) {
             throw new IllegalArgumentException("ResultSetResponse already has a column named =" + title);
         }
@@ -138,6 +147,8 @@ public class ResultSetResponse extends AbstractResponse {
         } else {
             getJsonResponse().addColumn(newColumn);
         }
+        
+        return this;
     }
 
 

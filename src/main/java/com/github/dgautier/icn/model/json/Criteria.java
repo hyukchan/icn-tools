@@ -1,6 +1,5 @@
 package com.github.dgautier.icn.model.json;
 
-import com.filenet.api.admin.ChoiceList;
 import com.github.dgautier.icn.ICNLogger;
 import com.github.dgautier.icn.model.DataType;
 import com.google.common.base.Function;
@@ -15,98 +14,112 @@ import java.util.Locale;
 public class Criteria extends JsonObject {
 
 
-    public Criteria(ICNLogger logger, JSONObject jsonObject) {
+    Criteria(ICNLogger logger, JSONObject jsonObject) {
         super(logger, jsonObject);
     }
 
+    public static Criteria createFromJson(ICNLogger logger, JSONObject jsonObject) {
+        return new Criteria(logger, jsonObject);
+    }
 
-    public void setHasDependentAttributes(Boolean hasDependentAttributes) {
+
+    public Criteria hasDependentAttributes(Boolean hasDependentAttributes) {
         this.LOGGER.debug(Criteria.class, "setHasDependentProperties", "hasDependentAttributes=" + hasDependentAttributes + " on criteria=" + getSymbolicName());
         getJsonObject().put("hasDependentAttributes", hasDependentAttributes);
         getJsonObject().put("updatedHasDependentAttributes", hasDependentAttributes);
         getJsonObject().put("updated", Boolean.TRUE);
+        return this;
     }
 
-    public void setReadOnly(Boolean readOnly) {
-        this.LOGGER.debug(Criteria.class, "setReadOnly", "readOnly=" + readOnly + " on criteria=" + getSymbolicName());
+    public Criteria readOnly(Boolean readOnly) {
+        this.LOGGER.debug(Criteria.class, "readOnly", "readOnly=" + readOnly + " on criteria=" + getSymbolicName());
         getJsonObject().put("readOnly", readOnly);
         getJsonObject().put("updatedReadOnly", Boolean.TRUE);
         getJsonObject().put("updated", Boolean.TRUE);
+        return this;
     }
 
-    public void setRequired(Boolean required) {
-        this.LOGGER.debug(Criteria.class, "setRequired", "required=" + required + " on criteria=" + getSymbolicName());
+    public Criteria required(Boolean required) {
+        this.LOGGER.debug(Criteria.class, "required", "required=" + required + " on criteria=" + getSymbolicName());
         getJsonObject().put("required", required);
         getJsonObject().put("updatedRequired", Boolean.TRUE);
         getJsonObject().put("updated", Boolean.TRUE);
+        return this;
     }
 
-    public void setHidden(Boolean hidden) {
-        this.LOGGER.debug(Criteria.class, "setHidden", "hidden=" + hidden + " on criteria=" + getSymbolicName());
+    public Criteria hidden(Boolean hidden) {
+        this.LOGGER.debug(Criteria.class, "hidden", "hidden=" + hidden + " on criteria=" + getSymbolicName());
         getJsonObject().put("hidden", hidden);
         getJsonObject().put("updatedHidden", Boolean.TRUE);
         getJsonObject().put("updated", Boolean.TRUE);
+        return this;
     }
 
-    public void setDataType(DataType dataType) {
-        this.LOGGER.debug(Criteria.class, "setDataType", "dataType=" + dataType + " on criteria=" + getSymbolicName());
+    public Criteria dataType(DataType dataType) {
+        this.LOGGER.debug(Criteria.class, "dataType", "dataType=" + dataType + " on criteria=" + getSymbolicName());
         getJsonObject().put("dataType", dataType.value());
         getJsonObject().put("updated", Boolean.TRUE);
+        return this;
     }
 
-    public void setPropertyEditor(String propertyEditor) {
-        this.LOGGER.debug(Criteria.class, "setPropertyEditor", "propertyEditor=" + propertyEditor + " on criteria=" + getSymbolicName());
+    public Criteria propertyEditor(String propertyEditor) {
+        this.LOGGER.debug(Criteria.class, "propertyEditor", "propertyEditor=" + propertyEditor + " on criteria=" + getSymbolicName());
         getJsonObject().put("propertyEditor", propertyEditor);
         getJsonObject().put("updated", Boolean.TRUE);
+        return this;
     }
 
 
-    public void setValues(Object values) {
-        this.LOGGER.debug(Criteria.class, "setValues", "values=" + values + " on criteria=" + getSymbolicName());
+    public Criteria values(Object values) {
+        this.LOGGER.debug(Criteria.class, "values", "values=" + values + " on criteria=" + getSymbolicName());
         getJsonObject().put("values", values);
         getJsonObject().put("updatedValue", Boolean.TRUE);
         getJsonObject().put("updated", Boolean.TRUE);
+        return this;
     }
 
-    public void setValue(Object value) {
-        this.LOGGER.debug(Criteria.class, "setValue", "value=" + value + " on criteria=" + getSymbolicName());
+    public Criteria value(Object value) {
+        this.LOGGER.debug(Criteria.class, "value", "value=" + value + " on criteria=" + getSymbolicName());
         getJsonObject().put("value", value);
         getJsonObject().put("updatedValue", Boolean.TRUE);
         getJsonObject().put("updated", Boolean.TRUE);
+        return this;
     }
 
-    public void setDisplayValues(Object displayValues) {
-        this.LOGGER.debug(Criteria.class, "setDisplayValues", "displayValues=" + displayValues + " on criteria=" + getSymbolicName());
+    public Criteria displayValues(Object displayValues) {
+        this.LOGGER.debug(Criteria.class, "displayValues", "displayValues=" + displayValues + " on criteria=" + getSymbolicName());
         getJsonObject().put("displayValues", displayValues);
         getJsonObject().put("updated", Boolean.TRUE);
+        return this;
     }
 
-    public void setChoiceList(Locale locale, com.filenet.api.admin.ChoiceList choiceList) {
-        this.LOGGER.debug(Criteria.class, "setChoiceList", "setChoiceList=" + choiceList + " on criteria=" + getSymbolicName());
+    public Criteria choiceList(Locale locale, com.filenet.api.admin.ChoiceList choiceList) {
+        this.LOGGER.debug(Criteria.class, "choiceList", "choiceList=" + choiceList + " on criteria=" + getSymbolicName());
         JSONArray choiceListValues = JsonUtils.getChoiceValues(locale, choiceList);
-        setChoiceList(locale, choiceList.get_DisplayName(), choiceListValues);
+        return choiceList(locale, choiceList.get_DisplayName(), choiceListValues);
     }
 
-    public void setChoiceList(Locale locale, String displayName, JSONArray choiceListValues) {
+    public Criteria choiceList(Locale locale, String displayName, JSONArray choiceListValues) {
         JSONObject jsonChoiceList = JsonUtils.getChoiceList(displayName, choiceListValues);
         getJsonObject().put("choiceList", jsonChoiceList);
         getJsonObject().put("updatedChoiceList", Boolean.TRUE);
-        setValidValues(locale, choiceListValues);
+        return validValues(locale, choiceListValues);
     }
 
-    public void setChoiceList(Locale locale, com.filenet.api.admin.ChoiceList choiceList, Function<JSONObject, JSONObject> optionalProperty) {
-        this.LOGGER.debug(Criteria.class, "setChoiceList", "setChoiceList=" + choiceList + " on criteria=" + getSymbolicName());
+    public Criteria choiceList(Locale locale, com.filenet.api.admin.ChoiceList choiceList, Function<JSONObject, JSONObject> optionalProperty) {
+        this.LOGGER.debug(Criteria.class, "choiceList", "choiceList=" + choiceList + " on criteria=" + getSymbolicName());
 
         JSONArray choiceListValues = JsonUtils.getChoiceValues(locale, choiceList, optionalProperty);
-        setChoiceList(locale, choiceList.get_DisplayName(), choiceListValues);
+        return choiceList(locale, choiceList.get_DisplayName(), choiceListValues);
     }
 
 
-    public void setValidValues(Locale locale, JSONArray validValues) {
+    public Criteria validValues(Locale locale, JSONArray validValues) {
 
-        this.LOGGER.debug(Criteria.class, "setValidValues", "setValidValues=" + validValues + " on criteria=" + getSymbolicName());
+        this.LOGGER.debug(Criteria.class, "validValues", "validValues=" + validValues + " on criteria=" + getSymbolicName());
         getJsonObject().put("validValues", validValues);
         getJsonObject().put("updated", Boolean.TRUE);
+        return this;
     }
 
     public Object getValue() {
@@ -125,7 +138,7 @@ public class Criteria extends JsonObject {
     public String getFirstValue() {
 
         Object value = getValue();
-        if (value instanceof JSONArray){
+        if (value instanceof JSONArray) {
             JSONArray values = (JSONArray) value;
             return (String) values.get(0);
         } else {

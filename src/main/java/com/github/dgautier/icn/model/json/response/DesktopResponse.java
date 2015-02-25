@@ -10,18 +10,24 @@ import com.ibm.json.java.JSONObject;
  */
 public class DesktopResponse extends AbstractResponse {
 
-    public DesktopResponse(ICNLogger logger, JSONResponse jsonResponse) {
+    DesktopResponse(ICNLogger logger, JSONResponse jsonResponse) {
         super(logger, jsonResponse);
     }
 
 
-    public void removeFeature(String featureId){
+    public static DesktopResponse createFromJson(ICNLogger logger, JSONResponse jsonResponse){
+        return new DesktopResponse(logger,jsonResponse);
+    }
+    
+    public DesktopResponse removeFeature(String featureId){
 
         JSONObject feature = getFeature(featureId);
         if (feature != null){
             getFeatures().remove(feature);
             getLogger().debug(DesktopResponse.class, "removeFeature", "featureId=" + featureId);
         }
+        
+        return this;
     }
 
     private JSONObject getFeature(String featureId) {

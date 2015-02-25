@@ -21,7 +21,7 @@ public abstract class AbstractPluginService extends PluginService {
     private HttpServletRequest request;
     private HttpServletResponse response;
 
-    public ObjectStore getObjectStore() {
+    protected ObjectStore getObjectStore() {
         return objectStore;
     }
 

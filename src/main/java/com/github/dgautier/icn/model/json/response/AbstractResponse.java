@@ -11,7 +11,7 @@ public abstract class AbstractResponse {
     private final JSONResponse jsonResponse;
     private final ICNLogger logger;
 
-    public AbstractResponse(ICNLogger logger, JSONResponse jsonResponse) {
+    AbstractResponse(ICNLogger logger, JSONResponse jsonResponse) {
         this.logger = logger;
         this.jsonResponse = jsonResponse;
     }

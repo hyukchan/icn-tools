@@ -29,9 +29,13 @@ public class JsonObject {
 
     private final JSONObject jsonObject;
 
-    public JsonObject(ICNLogger logger, JSONObject jsonObject) {
+    JsonObject(ICNLogger logger, JSONObject jsonObject) {
         this.LOGGER = logger;
         this.jsonObject = jsonObject;
+    }
+    
+    public static JsonObject createFromJson(ICNLogger logger, JSONObject jsonObject){
+        return new JsonObject(logger,jsonObject);
     }
 
     public JSONObject getJsonObject() {
