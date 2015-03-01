@@ -24,19 +24,30 @@ public abstract class AbstractPluginResponseFilter extends PluginResponseFilter 
     private JSONResponse json;
 
     protected ObjectStore getObjectStore() {
-        return PluginUtils.getObjectStore(getService(),getLogger(),getCallbacks(), getRequest());
+        return PluginUtils.getObjectStore(getService(), getLogger(), getCallbacks(), getRequest());
     }
 
     /**
      * FIXME find a way to avoid having to implement this in PluginService, ResponseFilter, RequestFilter etc..
+     *
      * @param key
      * @return
      * @throws Exception
      */
     protected String getConfiguration(String key) throws Exception {
-        getLogger().debug("AbstractPluginResponseFilter","getConfiguration","Configuration= " + getCallbacks().loadConfiguration());
+        getLogger().debug("AbstractPluginResponseFilter", "getConfiguration", "Configuration= " + getCallbacks().loadConfiguration());
 
         return JsonUtils.getConfiguration(getCallbacks().loadConfiguration(), key);
+    }
+
+    // TODO create common class to handle this method
+    protected String getDesktop() {
+        return getRequest().getParameter("desktop");
+    }
+
+    // FIXME find a way to avoid having to implement this in PluginService, ResponseFilter, RequestFilter etc..
+    protected String getMessage(String key) {
+        return getCallbacks().getResources().getMessage(getRequest().getLocale(), key);
     }
 
 
@@ -51,16 +62,12 @@ public abstract class AbstractPluginResponseFilter extends PluginResponseFilter 
         this.logger = new ICNLogger(callbacks.getLogger(), request);
 
         PluginUtils.print(getLogger(), getRequest());
-        getLogger().debug(this,"filter","filteringService="+service);
-        getLogger().debug(this,"filter","jsonObject="+getJson().toString());
+        getLogger().debug(this, "filter", "filteringService=" + service);
+        getLogger().debug(this, "filter", "jsonObject=" + getJson().toString());
         filter();
     }
 
-    // TODO create common class to handle this method
-    protected String getDesktop(){
-        return getRequest().getParameter("desktop");
-    }
-    
+
     public abstract void filter() throws Exception;
 
     protected ICNLogger getLogger() {
