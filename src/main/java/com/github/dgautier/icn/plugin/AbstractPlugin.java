@@ -1,5 +1,6 @@
 package com.github.dgautier.icn.plugin;
 
+import com.google.common.base.Strings;
 import com.ibm.ecm.configuration.ApplicationConfig;
 import com.ibm.ecm.configuration.Config;
 import com.ibm.ecm.configuration.DesktopConfig;
@@ -7,6 +8,8 @@ import com.ibm.ecm.configuration.MenuConfig;
 import com.ibm.ecm.extension.*;
 
 import java.util.Collection;
+
+import static com.google.common.base.Strings.isNullOrEmpty;
 
 /**
  * Created by DGA on 22/01/2015.
@@ -30,6 +33,11 @@ public abstract class AbstractPlugin extends Plugin {
 
     public AbstractPlugin() {
         pluginLogger = new PluginLogger(this);
+    }
+
+    @Override
+    public String getId() {
+        return this.getClass().getSimpleName() + "-" + getVersion();
     }
 
     public final String getFilename() {
@@ -58,7 +66,15 @@ public abstract class AbstractPlugin extends Plugin {
     public void setConfiguration(String configuration) {
         this.configuration = configuration;
     }
-    
+
+    @Override
+    public String getConfigurationDijitClass() {
+        if (isNullOrEmpty(getDojoModule())){
+            return null;
+        } else {
+            return getDojoModule() + ".ConfigurationPane";    
+        }
+    }
 
     /* (non-Javadoc)
      * @see com.ibm.ecm.extension.Plugin#getVersion()
