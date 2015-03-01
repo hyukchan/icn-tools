@@ -23,22 +23,21 @@ import java.util.List;
 /**
  * Created by DGA on 21/01/2015.
  */
-public class JsonObject {
+public class JsonObject<T extends JSONObject> {
 
-    protected static ICNLogger LOGGER;
-
-    private final JSONObject jsonObject;
-
-    JsonObject(ICNLogger logger, JSONObject jsonObject) {
+    private final ICNLogger LOGGER;
+    private final T jsonObject;
+    
+    protected JsonObject(ICNLogger logger, T jsonObject) {
         this.LOGGER = logger;
         this.jsonObject = jsonObject;
     }
-    
-    public static JsonObject createFromJson(ICNLogger logger, JSONObject jsonObject){
-        return new JsonObject(logger,jsonObject);
+
+    protected ICNLogger getLOGGER() {
+        return LOGGER;
     }
 
-    public JSONObject getJsonObject() {
+    public T getJsonObject() {
         return jsonObject;
     }
 
@@ -206,7 +205,4 @@ public class JsonObject {
         return (String) getJsonObject().get("name");
     }
 
-    public JSONObject getJson() {
-        return getJsonObject();
-    }
 }

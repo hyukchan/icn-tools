@@ -1,77 +1,63 @@
 package com.github.dgautier.icn.model.json.response;
 
 import com.github.dgautier.icn.ICNLogger;
+import com.github.dgautier.icn.model.json.JsonObject;
 import com.google.common.base.Function;
-import com.google.common.base.Strings;
 import com.ibm.ecm.json.JSONResultSetRow;
-
-import java.util.Objects;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
 /**
  * Created by DGA on 23/01/2015.
  */
-public class ResultSetRow {
+public class ResultSetRow<T extends JSONResultSetRow> extends JsonObject<T> {
 
-    public JSONResultSetRow getResultSetRow() {
-        return resultSetRow;
+
+    protected ResultSetRow(ICNLogger logger, T jsonObject) {
+        super(logger, jsonObject);
     }
-
-    private final JSONResultSetRow resultSetRow;
-    private final ICNLogger logger;
-
-    ResultSetRow(ICNLogger logger, JSONResultSetRow resultSetRow) {
-        this.logger = logger;
-        this.resultSetRow = resultSetRow;
-    }
-
-    public static ResultSetRow createFromJson(ICNLogger logger, JSONResultSetRow resultSetRow) {
-        return new ResultSetRow(logger, resultSetRow);
-    }
-
 
     public ResultSetRow setAttributeValue(String symbolicName, Function<ResultSetRow, String> function) {
 
         String value = function.apply(this);
         if (value != null) {
-            this.resultSetRow.setAttributeValue(symbolicName, value);
-            logger.debug(ResultSetRow.class, "setAttributeValue", "symbolicName=" + symbolicName + " value=" + value);
+            getJsonObject().setAttributeValue(symbolicName, value);
+            getLOGGER().debug(ResultSetRow.class, "setAttributeValue", "symbolicName=" + symbolicName + " value=" + value);
         }
         return this;
     }
 
     public ResultSetRow setAttributeDisplayValue(String symbolicName, Function<ResultSetRow, String> function) {
 
-        if (this.resultSetRow.getAttributeValue(symbolicName) != null) {
-            this.resultSetRow.setAttributeDisplayValue(symbolicName, function.apply(this));
+        if (getJsonObject().getAttributeValue(symbolicName) != null) {
+            getJsonObject().setAttributeDisplayValue(symbolicName, function.apply(this));
         } else {
-            logger.warn(ResultSetRow.class, "setAttributeDisplayValue", "No value for : " + symbolicName + " in " + this.resultSetRow.toString());
+            getLOGGER().warn(ResultSetRow.class, "setAttributeDisplayValue", "No value for : " + symbolicName + " in " + getJsonObject().toString());
         }
         return this;
     }
 
     public String getDisplayValueOrValue(String symbolicName) {
 
-        if (!isNullOrEmpty(this.resultSetRow.getAttributeDisplayValue(symbolicName))) {
+        if (!isNullOrEmpty(getJsonObject().getAttributeDisplayValue(symbolicName))) {
             return getDisplayValue(symbolicName);
-        } else if (this.resultSetRow.getAttributeValue(symbolicName) != null) {
+        } else if (getJsonObject().getAttributeValue(symbolicName) != null) {
             return (String) getValue(symbolicName);
         } else {
-            logger.debug(ResultSetRow.class, "getDisplayValueOrValue", "No value for symbolicName=" + symbolicName);
+            getLOGGER().debug(ResultSetRow.class, "getDisplayValueOrValue", "No value for symbolicName=" + symbolicName);
             return "";
         }
     }
 
     public Object getValue(String symbolicName) {
-        Object value = this.resultSetRow.getAttributeValue(symbolicName);
-        logger.debug(ResultSetRow.class, "getDisplayValueOrValue", "symbolicName=" + symbolicName + ";value=" + value);
-        return this.resultSetRow.getAttributeValue(symbolicName);
+        Object value = getJsonObject().getAttributeValue(symbolicName);
+        getLOGGER().debug(ResultSetRow.class, "getDisplayValueOrValue", "symbolicName=" + symbolicName + ";value=" + value);
+        return getJsonObject().getAttributeValue(symbolicName);
     }
 
     public String getDisplayValue(String symbolicName) {
-        String displayValue = this.resultSetRow.getAttributeDisplayValue(symbolicName);
-        logger.debug(ResultSetRow.class, "getDisplayValueOrValue", "symbolicName=" + symbolicName + ";displayValue=" + displayValue);
+        String displayValue = getJsonObject().getAttributeDisplayValue(symbolicName);
+        getLOGGER().debug(ResultSetRow.class, "getDisplayValueOrValue", "symbolicName=" + symbolicName + ";displayValue=" + displayValue);
         return displayValue;
     }
 }

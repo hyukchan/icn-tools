@@ -35,10 +35,6 @@ public class CriteriasResponse extends AbstractResponse {
         }
     }
 
-    public static CriteriasResponse createFromJson(ICNLogger logger, JSONResponse jsonResponse){
-        return new CriteriasResponse(logger,jsonResponse);
-    }
-    
     public Criteria getCriteria(String symbolicName) {
         return this.criterias.get(symbolicName);
     }
@@ -51,11 +47,11 @@ public class CriteriasResponse extends AbstractResponse {
 
 
         List<JSONObject> orderedItems = new ArrayList<JSONObject>();
-        JSONArray jsonCriterias = (JSONArray) getJsonResponse().get("criterias");
+        JSONArray jsonCriterias = (JSONArray) getJsonObject().get("criterias");
 
         // Add ordered Items firsts
         for (String symbolicName : order) {
-            orderedItems.add(getCriteria(symbolicName).getJson());
+            orderedItems.add(getCriteria(symbolicName).getJsonObject());
         }
 
         // then add other items
@@ -72,7 +68,7 @@ public class CriteriasResponse extends AbstractResponse {
             orderedCriterias.add(jsonObject);
         }
 
-        getJsonResponse().put("criterias", orderedCriterias);
+        getJsonObject().put("criterias", orderedCriterias);
 
         return this;
 
