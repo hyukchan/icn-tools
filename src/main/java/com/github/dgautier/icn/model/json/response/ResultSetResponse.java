@@ -12,11 +12,15 @@ import com.ibm.json.java.JSONObject;
 /**
  * Created by DGA on 23/01/2015.
  */
-public class ResultSetResponse<T extends JSONResultSetResponse> extends AbstractResponse<T> {
+public class ResultSetResponse<T extends JSONResultSetResponse> extends AbstractResponse<JSONResultSetResponse> {
 
-    
-    ResultSetResponse(ICNLogger logger, T jsonResponse) {
+
+    public ResultSetResponse(ICNLogger logger, T jsonResponse) {
         super(logger, jsonResponse);
+    }
+
+    public ResultSetResponse(ICNLogger logger){
+        super(logger, new JSONResultSetResponse());
     }
 
     private boolean hasColumn(String symbolicName) {
@@ -55,7 +59,7 @@ public class ResultSetResponse<T extends JSONResultSetResponse> extends Abstract
         } else {
             getLOGGER().debug(ResultSetResponse.class, "setAttributeDisplayValue", "Response has no column=" + symbolicName);
         }
-        
+
         return this;
     }
 
@@ -68,7 +72,7 @@ public class ResultSetResponse<T extends JSONResultSetResponse> extends Abstract
             ResultSetRow row = new ResultSetRow(getLOGGER(), getJsonObject().getRow(rowCount));
             row.setAttributeValue(symbolicName, function);
         }
-        
+
         return this;
     }
 
@@ -84,6 +88,7 @@ public class ResultSetResponse<T extends JSONResultSetResponse> extends Abstract
 
     /**
      * *
+     *
      * @param resultSetColumn
      * @param value
      * @param displayValue
@@ -105,7 +110,7 @@ public class ResultSetResponse<T extends JSONResultSetResponse> extends Abstract
         } else {
             getJsonObject().addColumn(resultSetColumn.json());
         }
-        
+
         return this;
     }
 
