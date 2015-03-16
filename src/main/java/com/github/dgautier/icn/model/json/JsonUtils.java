@@ -9,13 +9,9 @@ import com.google.common.base.Function;
 import com.ibm.json.java.JSONArray;
 import com.ibm.json.java.JSONObject;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.util.Iterator;
 import java.util.Locale;
-import java.util.zip.GZIPOutputStream;
+import java.util.Map;
 
 /**
  * Created by DGA on 22/01/2015.
@@ -50,20 +46,20 @@ public class JsonUtils {
     }
 
     public static JSONArray getChoiceValues(Locale locale, com.filenet.api.admin.ChoiceList choiceList, Function<JSONObject, JSONObject> optionalProperty) {
-        JSONArray choiceListValues = getChoiceValues(locale, choiceList.get_ChoiceValues(), choiceList.get_DataType(),optionalProperty);
+        JSONArray choiceListValues = getChoiceValues(locale, choiceList.get_ChoiceValues(), choiceList.get_DataType(), optionalProperty);
         return choiceListValues;
     }
 
     public static JSONArray getChoiceValues(Locale locale, com.filenet.api.admin.ChoiceList choiceList) {
-        JSONArray choiceListValues = getChoiceValues(locale, choiceList.get_ChoiceValues(), choiceList.get_DataType(),null);
+        JSONArray choiceListValues = getChoiceValues(locale, choiceList.get_ChoiceValues(), choiceList.get_DataType(), null);
         return choiceListValues;
     }
 
-    public static JSONObject getChoiceList(String displayName,JSONArray choiceListValues) {
+    public static JSONObject getChoiceList(String displayName, JSONArray choiceListValues) {
 
         JSONObject jsonChoiceList = new JSONObject();
         jsonChoiceList.put("displayName", displayName);
-        jsonChoiceList.put("choices",choiceListValues );
+        jsonChoiceList.put("choices", choiceListValues);
 
         return jsonChoiceList;
     }
@@ -86,7 +82,7 @@ public class JsonUtils {
             jsonChoice.put("displayName", displayName);
             if (cValue != null) {
                 jsonChoice.put("value", cValue);
-                if (optionalProperty != null){
+                if (optionalProperty != null) {
                     jsonChoice = optionalProperty.apply(jsonChoice);
                 }
             } else {
@@ -94,7 +90,18 @@ public class JsonUtils {
             }
 
 
+            jsonChoices.add(jsonChoice);
+        }
+        return jsonChoices;
+    }
 
+    public static JSONArray toChoiceValues(Map<String, String> values) {
+        JSONArray jsonChoices = new JSONArray();
+
+        for (Map.Entry<String, String> entry : values.entrySet()) {
+            JSONObject jsonChoice = new JSONObject();
+            jsonChoice.put("value", entry.getKey());
+            jsonChoice.put("displayName", entry.getValue());
             jsonChoices.add(jsonChoice);
         }
         return jsonChoices;
