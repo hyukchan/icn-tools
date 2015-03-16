@@ -24,6 +24,6 @@ public abstract class AbstractPluginAction extends PluginAction {
      */
     @Override
     public String getServerTypes() {
-        return ServerTypes.FILENET;
+        return ServerTypes.p8.name();
     }
 }
