@@ -55,20 +55,19 @@ public class JsonObject<T extends JSONObject> {
         JSONArray jsonItems = new JSONArray();
         int i = 1;
         while (it.hasNext()) {
-            JSONObject jsonObj = new JSONObject();
             IndependentObject io = (IndependentObject) it.next();
             if (io instanceof User) {
                 User user = (User) io;
-                addUser(jsonObj, user);
+                jsonItems.add(toJsonObject(user));
             } else if (io instanceof Group) {
                 Group group = (Group) io;
-                addGroup(logger, jsonObj, group, orderingValue);
+                jsonItems.add(toJsonObject(logger,  group, orderingValue));
             } else if (io instanceof CustomObject) {
                 CustomObject customObject = (CustomObject) io;
-                addCustomObject(logger, jsonObj, customObject.getProperties());
+                jsonItems.add(toJsonObject(logger, customObject.getProperties()));
             }
 
-            jsonItems.add(jsonObj);
+
 
             if (i == pageSize)
                 break;
@@ -86,12 +85,15 @@ public class JsonObject<T extends JSONObject> {
         return jsonObject;
     }
 
-    private static void addCustomObject(ICNLogger logger, JSONObject jsonObj, Properties properties) {
+    private static JSONObject toJsonObject(ICNLogger logger, Properties properties) {
+
+        JSONObject jsonObj = new JSONObject();
         for (Iterator<Property> propertyIterator = properties.iterator(); propertyIterator.hasNext(); ) {
             Property property = propertyIterator.next();
 
             logger.debug(JsonObject.class, "addCustomObject", "CustomObject Property name : " + property.getPropertyName());
             logger.debug(JsonObject.class, "addCustomObject", "CustomObject Property class : " + property.getClass().getCanonicalName());
+
 
             try {
                 if (property instanceof PropertyString) {
@@ -120,9 +122,11 @@ public class JsonObject<T extends JSONObject> {
                 throw e;
             }
         }
+        return jsonObj;
     }
 
-    private static void addGroup(ICNLogger logger, JSONObject jsonObj, Group group, String orderingValue) {
+    private static JSONObject toJsonObject(ICNLogger logger, Group group, String orderingValue) {
+        JSONObject jsonObj = new JSONObject();
         jsonObj.put("id", group.get_Id());
         jsonObj.put("name", group.get_Name());
         jsonObj.put("shortName", group.get_ShortName());
@@ -132,8 +136,7 @@ public class JsonObject<T extends JSONObject> {
         if (!group.get_Users().isEmpty()) {
             JSONArray users = new JSONArray();
             for (Iterator<User> userIterator = group.get_Users().iterator(); userIterator.hasNext(); ) {
-                JSONObject userJSON = new JSONObject();
-                addUser(userJSON, userIterator.next());
+                JSONObject userJSON = toJsonObject(userIterator.next());
                 users.add(userJSON);
 
             }
@@ -151,15 +154,20 @@ public class JsonObject<T extends JSONObject> {
 
             jsonObj.put("users", users);
         }
+
+        return jsonObj;
     }
 
-    private static void addUser(JSONObject jsonObj, User user) {
+
+    public static JSONObject toJsonObject(User user) {
+        JSONObject  jsonObj = new JSONObject();
         jsonObj.put("id", user.get_Id());
         jsonObj.put("name", user.get_Name());
         jsonObj.put("shortName", user.get_ShortName());
         jsonObj.put("displayName", user.get_DisplayName());
         jsonObj.put("distinguishedName", user.get_DistinguishedName());
         jsonObj.put("emailAddress", user.get_Email());
+        return jsonObj;
     }
 
     private static JSONArray sort(ICNLogger logger, JSONArray jsonArray, final String orderingValue) {
