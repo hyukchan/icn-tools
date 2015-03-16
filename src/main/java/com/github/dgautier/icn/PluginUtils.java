@@ -6,6 +6,7 @@ import com.filenet.api.core.ObjectStore;
 import com.filenet.api.security.Group;
 import com.filenet.api.security.User;
 import com.filenet.api.util.UserContext;
+import com.github.dgautier.icn.model.ServerTypes;
 import com.google.common.base.Splitter;
 import com.ibm.ecm.extension.PluginServiceCallbacks;
 
@@ -49,8 +50,8 @@ public class PluginUtils {
     }
 
     public static com.filenet.api.core.ObjectStore getObjectStore(String service,ICNLogger logger, PluginServiceCallbacks callbacks, HttpServletRequest request) {
-        String repositoryId = request.getParameter(RequestParameters.REPOSITORY_ID);
-        String repositoryType = getRepositoryType(request);
+        String repositoryId = getRepositoryId(logger,request);
+        String repositoryType = getRepositoryType(logger,request);
 
         logger.debug(PluginUtils.class, "getObjectStore", "repositoryId=" + repositoryId + "repositoryType=" + repositoryType);
         if (
@@ -69,15 +70,37 @@ public class PluginUtils {
 
     }
 
-    private static String getRepositoryType(HttpServletRequest request) {
+    private static String getRepositoryId(ICNLogger logger,HttpServletRequest request) {
+        String repositoryId  = request.getParameter(RequestParameters.REPOSITORY_ID);
+
+        if (isNullOrEmpty(repositoryId)){
+            repositoryId = request.getParameter(RequestParameters.SERVER);
+        }
+
+        if (isNullOrEmpty(repositoryId)
+                || repositoryId.equals("null")){
+            print(logger,request);
+            throw new IllegalArgumentException("Unable to get repositoryId from request parameters");
+        }
+
+        return repositoryId;
+    }
+
+    private static String getRepositoryType(ICNLogger logger,HttpServletRequest request) {
         String repositoryType = request.getParameter(RequestParameters.REPOSITORY_TYPE);
 
         if (isNullOrEmpty(repositoryType)){
             repositoryType = request.getParameter(RequestParameters.SERVER_TYPE);
         }
 
-        return repositoryType;
+        if (isNullOrEmpty(repositoryType)
+                || repositoryType.equals("null")){
+            logger.warn(PluginUtils.class,"getRepositoryType","Unable to get repositoryType from request parameters. Sending Default Value="+ ServerTypes.p8);
 
+            return ServerTypes.p8.name();
+        } else {
+            return repositoryType;
+        }
     }
 
     public static void writeResponse(HttpServletRequest request, HttpServletResponse response, String json) throws Exception {
