@@ -21,7 +21,7 @@ public class CriteriasResponse extends AbstractResponse {
     private final Map<String, Criteria> criterias = Maps.newHashMap();
 
 
-    CriteriasResponse(ICNLogger logger, JSONResponse jsonResponse) {
+    public CriteriasResponse(ICNLogger logger, JSONResponse jsonResponse) {
         super(logger, jsonResponse);
 
 
