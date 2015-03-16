@@ -1,12 +1,14 @@
 package com.github.dgautier.icn.model.json;
 
 import com.github.dgautier.icn.ICNLogger;
+import com.github.dgautier.icn.model.Cardinality;
 import com.github.dgautier.icn.model.DataType;
 import com.google.common.base.Function;
 import com.ibm.json.java.JSONArray;
 import com.ibm.json.java.JSONObject;
 
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Created by DGA on 21/01/2015.
@@ -42,6 +44,14 @@ public class Criteria extends JsonObject {
     public Criteria required(Boolean required) {
         getLOGGER().debug(Criteria.class, "required", "required=" + required + " on criteria=" + getSymbolicName());
         getJsonObject().put("required", required);
+        getJsonObject().put("updatedRequired", Boolean.TRUE);
+        getJsonObject().put("updated", Boolean.TRUE);
+        return this;
+    }
+
+    public Criteria cardinality(Cardinality cardinality) {
+        getLOGGER().debug(Criteria.class, "cardinality", "cardinality=" + cardinality+ " on criteria=" + getSymbolicName());
+        getJsonObject().put("cardinality", cardinality.name());
         getJsonObject().put("updatedRequired", Boolean.TRUE);
         getJsonObject().put("updated", Boolean.TRUE);
         return this;
@@ -97,6 +107,12 @@ public class Criteria extends JsonObject {
         getLOGGER().debug(Criteria.class, "choiceList", "choiceList=" + choiceList + " on criteria=" + getSymbolicName());
         JSONArray choiceListValues = JsonUtils.getChoiceValues(locale, choiceList);
         return choiceList(locale, choiceList.get_DisplayName(), choiceListValues);
+    }
+
+    public Criteria choiceList(String displayName,Map<String,String> values) {
+        getLOGGER().debug(Criteria.class, "choiceList", "values=" + values + " on criteria=" + getSymbolicName());
+        JSONArray choiceListValues = JsonUtils.toChoiceValues(values);
+        return choiceList(null, displayName, choiceListValues);
     }
 
     /**
