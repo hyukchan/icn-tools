@@ -52,6 +52,12 @@ public abstract class AbstractPluginService extends PluginService {
         return JsonUtils.getConfiguration(getCallbacks().loadConfiguration(), key);
     }
 
+    protected JSONObject getConfiguration() throws Exception {
+        getLogger().debug("AbstractPluginService","getConfiguration","Configuration= " + getCallbacks().loadConfiguration());
+
+        return JSONObject.parse(getCallbacks().loadConfiguration());
+    }
+
     protected abstract void execute () throws Exception;
 
     public ICNLogger getLogger() {

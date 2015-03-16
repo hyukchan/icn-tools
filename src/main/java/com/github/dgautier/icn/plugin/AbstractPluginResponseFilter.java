@@ -40,6 +40,12 @@ public abstract class AbstractPluginResponseFilter extends PluginResponseFilter 
         return JsonUtils.getConfiguration(getCallbacks().loadConfiguration(), key);
     }
 
+    protected JSONObject getConfiguration() throws Exception {
+        getLogger().debug("AbstractPluginResponseFilter", "getConfiguration", "Configuration= " + getCallbacks().loadConfiguration());
+
+        return JSONObject.parse(getCallbacks().loadConfiguration());
+    }
+
     // TODO create common class to handle this method
     protected String getDesktop() {
         return getRequest().getParameter("desktop");
