@@ -1,9 +1,9 @@
 package com.github.dgautier.icn.plugin;
 
+import com.filenet.api.core.Connection;
 import com.filenet.api.core.ObjectStore;
 import com.github.dgautier.icn.ICNLogger;
 import com.github.dgautier.icn.PluginUtils;
-import com.github.dgautier.icn.RequestParameters;
 import com.github.dgautier.icn.model.json.JsonUtils;
 import com.ibm.ecm.extension.PluginResponseFilter;
 import com.ibm.ecm.extension.PluginServiceCallbacks;
@@ -26,6 +26,11 @@ public abstract class AbstractPluginResponseFilter extends PluginResponseFilter 
     protected ObjectStore getObjectStore() {
         return PluginUtils.getObjectStore(getService(), getLogger(), getCallbacks(), getRequest());
     }
+
+    protected Connection getConnection() {
+        return getObjectStore().getConnection();
+    }
+
 
     /**
      * FIXME find a way to avoid having to implement this in PluginService, ResponseFilter, RequestFilter etc..
