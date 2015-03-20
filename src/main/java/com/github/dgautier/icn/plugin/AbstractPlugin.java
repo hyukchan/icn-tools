@@ -1,11 +1,10 @@
 package com.github.dgautier.icn.plugin;
 
-import com.google.common.base.Strings;
 import com.ibm.ecm.configuration.ApplicationConfig;
-import com.ibm.ecm.configuration.Config;
 import com.ibm.ecm.configuration.DesktopConfig;
 import com.ibm.ecm.configuration.MenuConfig;
-import com.ibm.ecm.extension.*;
+import com.ibm.ecm.extension.Plugin;
+import com.ibm.ecm.extension.PluginLogger;
 
 import java.util.Collection;
 
