@@ -52,7 +52,10 @@ public class CriteriasResponse extends AbstractResponse {
 
         // Add ordered Items firsts
         for (String symbolicName : order) {
-            orderedItems.add(getCriteria(symbolicName).getJson());
+            Criteria criteria = response.getCriteria(symbolicName);
+            if (criteria != null) {
+                orderedItems.add(criteria.getJson());
+            }
         }
 
         // then add other items
